@@ -61,8 +61,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{viewmodel.isChargingOn ? View.VISIBLE : View.GONE}">
+            android:visibility="@{viewmodel.isChargingOn ? View.VISIBLE : View.GONE}"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/alarm_title"

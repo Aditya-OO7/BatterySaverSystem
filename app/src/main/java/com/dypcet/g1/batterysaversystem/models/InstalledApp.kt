@@ -7,6 +7,12 @@ import com.dypcet.g1.batterysaversystem.R
 
 data class InstalledApp(
     var name: String? = "-",
+    var packageName: String? = "-",
     var version: String? = "-1",
-    var icon: Drawable? = ActivityCompat.getDrawable(MainActivity().applicationContext, R.drawable.ic_launcher_background)
+    var icon: Drawable? = ActivityCompat.getDrawable(
+        MainActivity().applicationContext,
+        R.drawable.ic_launcher_background
+    ),
+    var permissions:List<String>? = emptyList(),
+    var services:List<String>? = emptyList()
 )

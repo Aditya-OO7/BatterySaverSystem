@@ -1,34 +1,38 @@
 package com.dypcet.g1.batterysaversystem.datasource
 
 import android.annotation.SuppressLint
-import android.app.usage.UsageStats
+import android.app.Application
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
 import com.dypcet.g1.batterysaversystem.applist.AppListFilterType
 import com.dypcet.g1.batterysaversystem.models.InstalledApp
-import java.util.concurrent.TimeUnit
 
-class DataSource(val applicationContext: Context) {
+class DataSource(val application: Application) {
+
+    private val TAG = DataSource::class.java.simpleName
 
     @SuppressLint("QueryPermissionsNeeded")
     private val packageList =
-        applicationContext.packageManager?.getInstalledPackages(PackageManager.GET_PERMISSIONS)
+        application.packageManager?.getInstalledPackages(PackageManager.GET_PERMISSIONS)
 
     private val usm =
-        applicationContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        application.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
     companion object {
         @Volatile
         private var INSTANCE: DataSource? = null
 
-        fun getInstance(applicationContext: Context): DataSource {
+        fun getInstance(application: Application): DataSource {
             synchronized(this) {
                 var instance = INSTANCE
 
                 if (instance == null) {
-                    instance = DataSource(applicationContext)
+                    instance = DataSource(application)
                     INSTANCE = instance
                 }
 
@@ -53,7 +57,7 @@ class DataSource(val applicationContext: Context) {
             AppListFilterType.USER_APPS_ONLY -> {
                 appList.clear()
                 for (pkg in packageList!!) {
-                    if (pkg.applicationInfo.flags.and(PackageManager.MATCH_SYSTEM_ONLY) == 0) {
+                    if (pkg.applicationInfo.flags.and(ApplicationInfo.FLAG_SYSTEM) == 0) {
                         appList.add(
                             getInstalledAppFromPkg(pkg)
                         )
@@ -64,7 +68,7 @@ class DataSource(val applicationContext: Context) {
             AppListFilterType.SYSTEM_APPS_ONLY -> {
                 appList.clear()
                 for (pkg in packageList!!) {
-                    if (pkg.applicationInfo.flags.and(PackageManager.MATCH_SYSTEM_ONLY) != 0) {
+                    if (pkg.applicationInfo.flags.and(ApplicationInfo.FLAG_SYSTEM) != 0) {
                         appList.add(
                             getInstalledAppFromPkg(pkg)
                         )
@@ -72,37 +76,17 @@ class DataSource(val applicationContext: Context) {
                 }
                 appList
             }
-            AppListFilterType.APPS_USED_LAST_10MIN -> {
+            AppListFilterType.ACTIVE_APPS_ONLY -> {
                 appList.clear()
-                val usageEvents = mutableListOf<UsageStats>()
-
-                val endTime = System.currentTimeMillis()
-                val beginTime = endTime - 6_00_000L
-                usageEvents.clear()
-
-                try {
-                    usm.queryUsageStats(
-                        UsageStatsManager.INTERVAL_DAILY,
-                        beginTime,
-                        endTime
-                    ).apply {
-                        usageEvents.addAll(this.sortedBy { it.lastTimeUsed })
-                    }
-                } catch (ignored: Exception) {
-                }
-
-                val lastTenMin =
-                    usageEvents.filter { endTime - it.lastTimeUsed < 600.toMillisFromSeconds() }
-                for (pkg in packageList!!) {
-                    for (stat in lastTenMin) {
-                        if (pkg.packageName == stat.packageName) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    for (pkg in packageList!!) {
+                        if (!usm.isAppInactive(pkg.packageName)) {
                             appList.add(
                                 getInstalledAppFromPkg(pkg)
                             )
                         }
                     }
                 }
-
                 appList
             }
         }
@@ -110,13 +94,49 @@ class DataSource(val applicationContext: Context) {
 
     private fun getInstalledAppFromPkg(pkg: PackageInfo): InstalledApp {
         return InstalledApp(
-            name = applicationContext.packageManager?.let {
+            name = application.packageManager?.let {
                 pkg.applicationInfo.loadLabel(it).toString()
             },
+            packageName = pkg.packageName,
             version = pkg.versionName,
-            icon = pkg.applicationInfo.loadIcon(applicationContext.packageManager)
+            icon = pkg.applicationInfo.loadIcon(application.packageManager)
         )
     }
 
-    private fun Int.toMillisFromSeconds(): Long = TimeUnit.SECONDS.toMillis(this.toLong())
+    fun getAppWithDetails(packageName: String): InstalledApp {
+
+        val packageInfo = application.packageManager.getPackageInfo(
+            packageName,
+            PackageManager.GET_PERMISSIONS
+        )
+        val app = getInstalledAppFromPkg(packageInfo)
+        try {
+
+//            val regex = "[A-Z_]+\$".toRegex()
+            val grantedPermissions = ArrayList<String>()
+            for (i in packageInfo.requestedPermissionsFlags.indices) {
+                if (packageInfo.requestedPermissionsFlags[i].and(PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
+                    grantedPermissions.add(packageInfo.requestedPermissions[i])
+                }
+            }
+            app.permissions = grantedPermissions
+
+            val serviceList = ArrayList<String>()
+            application.packageManager.getPackageInfo(
+                packageName,
+                PackageManager.GET_SERVICES
+            ).services.forEach {
+                serviceList.add(it.name)
+            }
+
+            app.services = serviceList
+        } catch (e: Exception) {
+            Log.d(TAG,
+                "Exception Occurred while fetching app detail info." + e.printStackTrace()
+                    .toString()
+            )
+        }
+
+        return app
+    }
 }

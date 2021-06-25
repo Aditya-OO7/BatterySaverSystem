@@ -23,4 +23,8 @@
         to charger and try again.
     </string>
     <string name="refresh_button_text">Refresh</string>
+    <string name="show_all_menu_item">Show All</string>
+    <string name="user_apps_only_menu_item">User Apps</string>
+    <string name="system_apps_only_menu_item">System Apps</string>
+    <string name="active_apps_menu_item">Active Apps</string>
 </resources>

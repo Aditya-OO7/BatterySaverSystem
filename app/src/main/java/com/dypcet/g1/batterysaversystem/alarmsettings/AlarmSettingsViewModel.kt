@@ -114,28 +114,27 @@ class AlarmSettingsViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun getChargeState(): Boolean {
-        val batteryStatus: Intent? =
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
-                getApplication<Application>().registerReceiver(null, intentFilter)
-            }
-        val status = batteryStatus?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+        val batteryStatus: Intent = getBatteryChangedIntent()
+        val status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
 
         return (status == BatteryManager.BATTERY_STATUS_CHARGING
                 || status == BatteryManager.BATTERY_STATUS_FULL)
     }
 
     private fun getCurrentPercentage(): Float {
-        val batteryStatus: Intent? =
-            IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
-                getApplication<Application>().registerReceiver(null, intentFilter)
-            }
+        val batteryStatus: Intent = getBatteryChangedIntent()
 
-        val batteryPct = batteryStatus?.let { intent ->
+        return batteryStatus.let { intent ->
             val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
             val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
             level * 100 / scale.toFloat()
         }
-        return batteryPct!!
+    }
+
+    private fun getBatteryChangedIntent(): Intent {
+        return IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
+            getApplication<Application>().registerReceiver(null, intentFilter)
+        }!!
     }
 
 }

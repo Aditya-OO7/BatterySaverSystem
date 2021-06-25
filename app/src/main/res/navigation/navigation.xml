@@ -18,5 +18,8 @@
         <action
             android:id="@+id/action_appDetailFragment_to_appListFragment"
             app:destination="@id/appListFragment" />
+        <argument
+            android:name="packageName"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dypcet.g1.batterysaversystem.databinding.ListItemInstalledappBinding
 import com.dypcet.g1.batterysaversystem.models.InstalledApp
 
-class AppListAdapter : ListAdapter<InstalledApp, AppListAdapter.ViewHolder>(AppListDiffCallback()) {
+class AppListAdapter(private val clickListener: AppListener) :
+    ListAdapter<InstalledApp, AppListAdapter.ViewHolder>(AppListDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), clickListener)
     }
 
     class ViewHolder private constructor(private val binding: ListItemInstalledappBinding) :
@@ -28,12 +29,17 @@ class AppListAdapter : ListAdapter<InstalledApp, AppListAdapter.ViewHolder>(AppL
             }
         }
 
-        fun bind(item: InstalledApp) {
+        fun bind(item: InstalledApp, clickListener: AppListener) {
             binding.app = item
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
     }
 
+}
+
+class AppListener(val clickListener: (app: InstalledApp) -> Unit) {
+    fun onClick(app: InstalledApp) = clickListener(app)
 }
 
 class AppListDiffCallback : DiffUtil.ItemCallback<InstalledApp>() {

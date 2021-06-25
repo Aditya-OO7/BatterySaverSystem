@@ -2,6 +2,7 @@ package com.dypcet.g1.batterysaversystem.applist
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.dypcet.g1.batterysaversystem.datasource.DataSource
@@ -15,13 +16,23 @@ class AppListViewModel(
 
     var apps = MutableLiveData<List<InstalledApp>>()
 
+    private val _navigateToAppDetail = MutableLiveData<String?>()
+    val navigateToAppDetail
+        get() = _navigateToAppDetail
+
     init {
-        initializeAppList()
+        setFiltering(AppListFilterType.ALL_APPS)
     }
 
-    private fun initializeAppList() {
-        viewModelScope.launch {
-            apps.value = dataSource.getApps(AppListFilterType.ALL_APPS)
-        }
+    fun setFiltering(requestType: AppListFilterType) {
+        apps.value = dataSource.getApps(requestType)
+    }
+
+    fun onAppClicked(packageName: String) {
+        _navigateToAppDetail.value = packageName
+    }
+
+    fun onAppDetailNavigated() {
+        _navigateToAppDetail.value = null
     }
 }
