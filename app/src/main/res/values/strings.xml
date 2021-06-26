@@ -27,4 +27,6 @@
     <string name="user_apps_only_menu_item">User Apps</string>
     <string name="system_apps_only_menu_item">System Apps</string>
     <string name="active_apps_menu_item">Active Apps</string>
+    <string name="open_button_text">Open</string>
+    <string name="close_button_text">Close</string>
 </resources>

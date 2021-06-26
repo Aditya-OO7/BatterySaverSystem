@@ -1,10 +1,14 @@
 package com.dypcet.g1.batterysaversystem.appdetail
 
+import android.app.Application
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListAdapter
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -51,6 +55,21 @@ class AppDetailFragment : Fragment() {
 
         val expandableListAdapter = MyExpandableListAdapter(titleList, detailList)
         viewBinding.expandableList.setAdapter(expandableListAdapter)
+
+        viewModel.navigateToApp.observe(viewLifecycleOwner, {
+            if (it) {
+                val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(args.packageName)
+                startActivity(launchIntent)
+            }
+        })
+
+        viewModel.navigateToAppSettings.observe(viewLifecycleOwner, {
+            if (it) {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.fromParts("package", args.packageName, null)
+                startActivity(intent)
+            }
+        })
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             val action = AppDetailFragmentDirections.actionAppDetailFragmentToAppListFragment()
