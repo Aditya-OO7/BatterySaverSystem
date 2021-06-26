@@ -7,11 +7,16 @@
         <variable
             name="app"
             type="com.dypcet.g1.batterysaversystem.models.InstalledApp" />
+
+        <variable
+            name="clickListener"
+            type="com.dypcet.g1.batterysaversystem.applist.AppListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> clickListener.onClick(app)}">
 
         <ImageView
             android:id="@+id/imageView"

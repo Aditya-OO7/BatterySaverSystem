@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dypcet.g1.batterysaversystem.R
+import com.dypcet.g1.batterysaversystem.applist.AppListViewModel
 import com.dypcet.g1.batterysaversystem.databinding.FragmentAlertSettingsBinding
 
 class AlertSettingsFragment : Fragment() {

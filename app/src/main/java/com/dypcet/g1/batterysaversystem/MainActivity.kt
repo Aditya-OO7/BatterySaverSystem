@@ -2,13 +2,10 @@ package com.dypcet.g1.batterysaversystem
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.dypcet.g1.batterysaversystem.receivers.PowerConnectionReceiver
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,11 +13,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         createChannel()
-
-        // Register Receiver example
-//        IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
-//            applicationContext.registerReceiver(PowerConnectionReceiver(), intentFilter)
-//        }
     }
 
     private fun createChannel() {
