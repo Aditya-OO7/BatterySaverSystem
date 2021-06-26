@@ -13,6 +13,6 @@ data class InstalledApp(
         MainActivity().applicationContext,
         R.drawable.ic_launcher_background
     ),
-    var permissions:List<String>? = emptyList(),
-    var services:List<String>? = emptyList()
+    var permissions: List<String>? = emptyList(),
+    var services: List<String>? = emptyList()
 )

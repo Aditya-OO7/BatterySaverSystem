@@ -11,7 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.dypcet.g1.batterysaversystem.datasource.SharedPreferenceManager
-import com.dypcet.g1.batterysaversystem.services.AlarmService
+import com.dypcet.g1.batterysaversystem.services.RingtoneService
 import com.dypcet.g1.batterysaversystem.services.ChargeAlarmService
 import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALARM
 import com.dypcet.g1.batterysaversystem.utils.PERCENTAGE_EXTRA
@@ -97,7 +97,8 @@ class AlarmSettingsViewModel(application: Application) : AndroidViewModel(applic
         Log.d(TAG, "onStopAlarm called")
 
         // Stop ringtone if charging is complete and alarm ringtone is on
-        AlarmService.getInstance(getApplication<Application>().applicationContext).stopAlarmIfOn()
+        RingtoneService.getInstance(getApplication<Application>().applicationContext)
+            .stopAlarmIfOn()
 
         // Now comes the end! Stop the alarm service
         Intent(

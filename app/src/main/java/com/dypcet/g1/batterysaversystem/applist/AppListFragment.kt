@@ -20,7 +20,7 @@ class AppListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         viewBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_app_list, container, false)
@@ -65,23 +65,23 @@ class AppListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.filter_all -> {
-            Toast.makeText(context, "Filter All", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Filter All", Toast.LENGTH_SHORT).show()
             viewModel.setFiltering(AppListFilterType.ALL_APPS)
             true
         }
         R.id.filter_userapps_only -> {
-            Toast.makeText(context, "Filter User Apps", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Filter User Apps", Toast.LENGTH_SHORT).show()
             viewModel.setFiltering(AppListFilterType.USER_APPS_ONLY)
             true
         }
         R.id.filter_system_only -> {
-            Toast.makeText(context, "Filter System Apps", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Filter System Apps", Toast.LENGTH_SHORT).show()
             viewModel.setFiltering(AppListFilterType.SYSTEM_APPS_ONLY)
             true
         }
         R.id.filter_active -> {
-            Toast.makeText(context, "Filter Active Apps", Toast.LENGTH_LONG).show()
-            viewModel.setFiltering(AppListFilterType.ACTIVE_APPS_ONLY)
+            Toast.makeText(context, "Will be available in future updates", Toast.LENGTH_LONG).show()
+//            viewModel.setFiltering(AppListFilterType.ACTIVE_APPS_ONLY)
             true
         }
         else -> false

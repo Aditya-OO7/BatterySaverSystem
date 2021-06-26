@@ -8,13 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dypcet.g1.batterysaversystem.R
 import com.dypcet.g1.batterysaversystem.databinding.FragmentAlarmSettingsBinding
-import com.dypcet.g1.batterysaversystem.datasource.SharedPreferenceManager
 import com.dypcet.g1.batterysaversystem.utils.StateType
 import com.google.android.material.slider.Slider
 
 class AlarmSettingsFragment : Fragment() {
-
-    private val TAG = AlarmSettingsFragment::class.java.simpleName
 
     private lateinit var viewBinding: FragmentAlarmSettingsBinding
 
@@ -25,8 +22,12 @@ class AlarmSettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_alarm_settings, container, false)
+        viewBinding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_alarm_settings,
+            container,
+            false
+        )
         viewBinding.lifecycleOwner = this
 
         viewModel = AlarmSettingsViewModel(requireActivity().application)

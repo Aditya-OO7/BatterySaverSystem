@@ -1,9 +1,6 @@
 package com.dypcet.g1.batterysaversystem.appdetail
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.dypcet.g1.batterysaversystem.datasource.DataSource
@@ -13,8 +10,6 @@ class AppDetailViewModel(
     dataSource: DataSource,
     packageName: String
 ) : AndroidViewModel(application) {
-
-    private val TAG = AppDetailViewModel::class.java.simpleName
 
     private val _app = dataSource.getAppWithDetails(packageName)
     val app = _app

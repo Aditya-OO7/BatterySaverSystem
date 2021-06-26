@@ -9,9 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.dypcet.g1.batterysaversystem.MainActivity
 import com.dypcet.g1.batterysaversystem.R
 
-public val NOTIFICATION_ID = 0
-private val REQUEST_CODE = 0
-private val FLAGS = 0
+const val NOTIFICATION_ID = 0
+const val REQUEST_CODE = 0
+const val FLAGS = 0
 
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
 

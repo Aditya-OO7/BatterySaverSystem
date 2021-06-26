@@ -8,7 +8,7 @@ import android.os.BatteryManager
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.dypcet.g1.batterysaversystem.R
-import com.dypcet.g1.batterysaversystem.services.AlarmService
+import com.dypcet.g1.batterysaversystem.services.RingtoneService
 import com.dypcet.g1.batterysaversystem.utils.sendNotification
 
 class PowerConnectionReceiver : BroadcastReceiver() {
@@ -34,7 +34,7 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 
         if ((!isChargeCompleteNotified) && batteryPercentage!!.equals(_percentage)) {
             isChargeCompleteNotified = true
-            val ringtone = AlarmService.getInstance(context.applicationContext)
+            val ringtone = RingtoneService.getInstance(context.applicationContext)
             ringtone.startAlarm()
             val notificationManager = ContextCompat.getSystemService(
                 context,

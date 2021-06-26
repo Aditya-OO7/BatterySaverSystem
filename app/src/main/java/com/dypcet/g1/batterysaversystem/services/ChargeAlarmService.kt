@@ -10,10 +10,7 @@ import androidx.core.app.NotificationCompat
 import com.dypcet.g1.batterysaversystem.MainActivity
 import com.dypcet.g1.batterysaversystem.R
 import com.dypcet.g1.batterysaversystem.receivers.PowerConnectionReceiver
-import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALARM
-import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALERT
-import com.dypcet.g1.batterysaversystem.utils.PERCENTAGE_EXTRA
-import com.dypcet.g1.batterysaversystem.utils.SERVICE_TYPE
+import com.dypcet.g1.batterysaversystem.utils.*
 
 class ChargeAlarmService : Service() {
 
@@ -63,21 +60,21 @@ class ChargeAlarmService : Service() {
         }
 
         val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,0)
+        val pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, notificationIntent, FLAGS)
 
         val notification = NotificationCompat.Builder(
             this,
             applicationContext.getString(R.string.notification_channel_id)
         )
             .setContentTitle(
-                when(serviceType) {
+                when (serviceType) {
                     SERVICE_ALARM -> "Charge Alarm Service"
                     SERVICE_ALERT -> "Charge Alert Service"
                     else -> "Unintended Service call"
                 }
             )
             .setContentText(
-                when(serviceType) {
+                when (serviceType) {
                     SERVICE_ALARM -> "Charge Alarm set to $percentage"
                     SERVICE_ALERT -> "Charge Alert set to $percentage"
                     else -> "Unintended Service call"

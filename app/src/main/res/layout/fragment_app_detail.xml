@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.dypcet.g1.batterysaversystem.appdetail.AppDetailViewModel" />
@@ -91,8 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:text="@string/open_button_text"
             android:onClick="@{()-> viewModel.openApp()}"
+            android:text="@string/open_button_text"
             app:layout_constraintEnd_toStartOf="@+id/close_app_button"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,8 +104,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="@string/close_button_text"
             android:onClick="@{()-> viewModel.closeApp()}"
+            android:text="@string/close_button_text"
             app:layout_constraintBottom_toBottomOf="@+id/open_app_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

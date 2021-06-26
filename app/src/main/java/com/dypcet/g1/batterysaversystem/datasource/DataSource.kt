@@ -131,7 +131,8 @@ class DataSource(val application: Application) {
 
             app.services = serviceList
         } catch (e: Exception) {
-            Log.d(TAG,
+            Log.d(
+                TAG,
                 "Exception Occurred while fetching app detail info." + e.printStackTrace()
                     .toString()
             )

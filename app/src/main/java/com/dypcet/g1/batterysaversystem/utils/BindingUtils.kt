@@ -4,7 +4,6 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.dypcet.g1.batterysaversystem.R
 
-// Add Binding Adapters here
 @BindingAdapter("setAlarmBatteryPercentageText")
 fun TextView.setTextForSettingBatteryPercentage(percentage: Float?) {
     text = this.context.getString(R.string.alarm_battery_percentage_string, percentage?.toInt())

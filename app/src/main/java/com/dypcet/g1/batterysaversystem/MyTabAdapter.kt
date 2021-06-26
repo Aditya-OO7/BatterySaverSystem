@@ -1,4 +1,4 @@
-package com.dypcet.g1.batterysaversystem.adapters
+package com.dypcet.g1.batterysaversystem
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

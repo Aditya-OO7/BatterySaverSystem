@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/appDetailFragment2"
         android:name="com.dypcet.g1.batterysaversystem.appdetail.AppDetailFragment"
-        android:label="AppDetailFragment" >
+        android:label="AppDetailFragment">
         <argument
             android:name="package_name"
             app:argType="string" />

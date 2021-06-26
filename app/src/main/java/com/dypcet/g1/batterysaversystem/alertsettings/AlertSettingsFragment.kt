@@ -13,8 +13,6 @@ import com.google.android.material.slider.Slider
 
 class AlertSettingsFragment : Fragment() {
 
-    private val TAG = AlertSettingsFragment::class.java.simpleName
-
     private lateinit var viewBinding: FragmentAlertSettingsBinding
 
     private lateinit var viewModel: AlertSettingsViewModel
@@ -23,9 +21,14 @@ class AlertSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         viewBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_alert_settings, container, false)
+            DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_alert_settings,
+                container,
+                false
+            )
         viewBinding.lifecycleOwner = this
 
         viewModel = AlertSettingsViewModel(requireActivity().application)

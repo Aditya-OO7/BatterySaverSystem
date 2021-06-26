@@ -15,8 +15,6 @@ import com.dypcet.g1.batterysaversystem.datasource.DataSource
 
 class AppDetailFragment : Fragment() {
 
-    private val TAG = AppDetailFragment::class.java.simpleName
-
     private lateinit var viewBinding: FragmentAppDetailBinding
     private lateinit var viewModel: AppDetailViewModel
 
@@ -24,11 +22,13 @@ class AppDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         viewBinding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_app_detail, container, false
+            R.layout.fragment_app_detail,
+            container,
+            false
         )
         viewBinding.lifecycleOwner = this
 
@@ -54,7 +54,9 @@ class AppDetailFragment : Fragment() {
 
         viewModel.navigateToApp.observe(viewLifecycleOwner, {
             if (it) {
-                val launchIntent = requireActivity().packageManager.getLaunchIntentForPackage(args.packageName)
+                val launchIntent = requireActivity()
+                    .packageManager
+                    .getLaunchIntentForPackage(args.packageName)
                 startActivity(launchIntent)
             }
         })
@@ -66,11 +68,6 @@ class AppDetailFragment : Fragment() {
                 startActivity(intent)
             }
         })
-
-//        requireActivity().onBackPressedDispatcher.addCallback(this) {
-//            val action = AppDetailFragmentDirections.actionAppDetailFragmentToAppListFragment()
-//            findNavController().navigate(action)
-//        }
 
         return viewBinding.root
     }

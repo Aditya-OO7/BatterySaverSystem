@@ -52,7 +52,7 @@ class SharedPreferenceManager(val applicationContext: Context) {
         with(sharedPref.edit()) {
             putBoolean(
                 applicationContext.getString(R.string.alarm_state_key),
-                when(state) {
+                when (state) {
                     StateType.ON -> true
                     else -> false
                 }
@@ -62,7 +62,7 @@ class SharedPreferenceManager(val applicationContext: Context) {
     }
 
     fun getAlarmState(): StateType {
-        return when(sharedPref.getBoolean(
+        return when (sharedPref.getBoolean(
             applicationContext.getString(R.string.alarm_state_key),
             false
         )) {
@@ -92,7 +92,7 @@ class SharedPreferenceManager(val applicationContext: Context) {
         with(sharedPref.edit()) {
             putBoolean(
                 applicationContext.getString(R.string.alert_state_key),
-                when(state) {
+                when (state) {
                     StateType.ON -> true
                     else -> false
                 }
@@ -102,7 +102,7 @@ class SharedPreferenceManager(val applicationContext: Context) {
     }
 
     fun getAlertState(): StateType {
-        return when(sharedPref.getBoolean(
+        return when (sharedPref.getBoolean(
             applicationContext.getString(R.string.alert_state_key),
             false
         )) {
