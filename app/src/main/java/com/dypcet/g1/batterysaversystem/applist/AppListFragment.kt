@@ -44,7 +44,7 @@ class AppListFragment : Fragment() {
         viewModel.navigateToAppDetail.observe(viewLifecycleOwner, { packageName ->
             packageName?.let {
                 this.findNavController().navigate(
-                    AppListFragmentDirections.actionAppListFragmentToAppDetailFragment(packageName)
+                    AppListFragmentDirections.actionAppListFragmentToAppDetailActivity(packageName)
                 )
                 viewModel.onAppDetailNavigated()
             }

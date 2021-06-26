@@ -8,18 +8,15 @@
         android:name="com.dypcet.g1.batterysaversystem.applist.AppListFragment"
         android:label="AppListFragment" >
         <action
-            android:id="@+id/action_appListFragment_to_appDetailFragment"
-            app:destination="@id/appDetailFragment" />
+            android:id="@+id/action_appListFragment_to_appDetailActivity"
+            app:destination="@id/appDetailActivity" />
     </fragment>
-    <fragment
-        android:id="@+id/appDetailFragment"
-        android:name="com.dypcet.g1.batterysaversystem.appdetail.AppDetailFragment"
-        android:label="AppDetailFragment" >
-        <action
-            android:id="@+id/action_appDetailFragment_to_appListFragment"
-            app:destination="@id/appListFragment" />
+    <activity
+        android:id="@+id/appDetailActivity"
+        android:name="com.dypcet.g1.batterysaversystem.appdetail.AppDetailActivity"
+        android:label="AppDetailActivity" >
         <argument
-            android:name="packageName"
-            app:argType="string" />
-    </fragment>
+            android:name="package_name"
+            app:argType="string"/>
+    </activity>
 </navigation>
