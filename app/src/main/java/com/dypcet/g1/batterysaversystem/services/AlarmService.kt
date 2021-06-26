@@ -1,8 +1,8 @@
 package com.dypcet.g1.batterysaversystem.services
 
-import android.app.Application
 import android.content.Context
 import android.media.RingtoneManager
+import android.util.Log
 
 class AlarmService(applicationContext: Context) {
 
@@ -10,6 +10,8 @@ class AlarmService(applicationContext: Context) {
         applicationContext,
         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
     )
+
+    private var _isAlarmOn = false
 
     companion object {
 
@@ -30,10 +32,16 @@ class AlarmService(applicationContext: Context) {
     }
 
     fun startAlarm() {
+        Log.d("Alarm Ringtone", "Ringtone Started")
         ringtone.play()
+        _isAlarmOn = true
     }
 
-    fun stopAlarm() {
-        ringtone.stop()
+    fun stopAlarmIfOn() {
+        if (_isAlarmOn) {
+        Log.d("Alarm Ringtone", "Ringtone Stopped")
+            ringtone.stop()
+            _isAlarmOn = false
+        }
     }
 }

@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:text="@string/alert_text"
+                android:text="@string/charging_off_alert_text_view"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 app:layout_constraintBottom_toTopOf="@+id/button"
@@ -78,11 +78,10 @@
 
             <TextView
                 android:id="@+id/battery_percentage"
-                setBatteryPercentageText="@{viewmodel.percentage}"
+                setAlarmBatteryPercentageText="@{viewmodel.percentage}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="@{viewmodel.alarmSet ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toTopOf="@+id/slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -90,14 +89,13 @@
                 tools:text="Set Alarm for 60% battery" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/alarm_set_text_view"
                 alarmSetDoneText="@{viewmodel.percentage}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/teal_700"
                 android:textSize="30sp"
                 android:textStyle="bold"
-                android:visibility="@{viewmodel.alarmSet ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,12 +103,11 @@
                 tools:text="Alarm set for 60% battery" />
 
             <TextView
-                android:id="@+id/enter_battery_percentage"
+                android:id="@+id/move_slider_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/enter_battery_percentage"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="@{viewmodel.alarmSet ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toTopOf="@+id/slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -123,7 +120,6 @@
                 android:value="@{viewmodel.percentage}"
                 android:valueFrom="0.0"
                 android:valueTo="100.0"
-                android:visibility="@{viewmodel.alarmSet ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toTopOf="@+id/start_alarm_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

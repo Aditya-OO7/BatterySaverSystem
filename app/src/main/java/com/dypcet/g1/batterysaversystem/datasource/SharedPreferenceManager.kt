@@ -3,6 +3,7 @@ package com.dypcet.g1.batterysaversystem.datasource
 import android.content.Context
 import android.content.SharedPreferences
 import com.dypcet.g1.batterysaversystem.R
+import com.dypcet.g1.batterysaversystem.utils.StateType
 
 class SharedPreferenceManager(val applicationContext: Context) {
 
@@ -30,54 +31,83 @@ class SharedPreferenceManager(val applicationContext: Context) {
         }
     }
 
-    fun putPercentage(percentage: Float) {
+    fun putAlarmPercentage(percentage: Float) {
         with(sharedPref.edit()) {
             putFloat(
-                applicationContext.getString(R.string.percentage_key),
+                applicationContext.getString(R.string.alarm_percentage_key),
                 percentage
             )
             apply()
         }
     }
 
-    fun getPercentage(): Float {
+    fun getAlarmPercentage(): Float {
         return sharedPref.getFloat(
-            applicationContext.getString(R.string.percentage_key),
+            applicationContext.getString(R.string.alarm_percentage_key),
             0.0F
         )
     }
 
-    fun putAlarmState(state: Boolean) {
+    fun putAlarmState(state: StateType) {
         with(sharedPref.edit()) {
             putBoolean(
-                applicationContext.getString(R.string.alarm_set_key),
-                state
+                applicationContext.getString(R.string.alarm_state_key),
+                when(state) {
+                    StateType.ON -> true
+                    else -> false
+                }
             )
             apply()
         }
     }
 
-    fun getAlarmState(): Boolean {
-        return sharedPref.getBoolean(
-            applicationContext.getString(R.string.alarm_set_key),
-            true
-        )
-    }
-
-    fun putChargeState(state: Boolean) {
-        with(sharedPref.edit()) {
-            putBoolean(
-                applicationContext.getString(R.string.charge_complete_key),
-                state
-            )
-            apply()
-        }
-    }
-
-    fun getChargeState(): Boolean {
-        return sharedPref.getBoolean(
-            applicationContext.getString(R.string.charge_complete_key),
+    fun getAlarmState(): StateType {
+        return when(sharedPref.getBoolean(
+            applicationContext.getString(R.string.alarm_state_key),
             false
+        )) {
+            true -> StateType.ON
+            else -> StateType.OFF
+        }
+    }
+
+    fun putAlertPercentage(percentage: Float) {
+        with(sharedPref.edit()) {
+            putFloat(
+                applicationContext.getString(R.string.alert_percentage_key),
+                percentage
+            )
+            apply()
+        }
+    }
+
+    fun getAlertPercentage(): Float {
+        return sharedPref.getFloat(
+            applicationContext.getString(R.string.alert_percentage_key),
+            0.0F
         )
+    }
+
+    fun putAlertState(state: StateType) {
+        with(sharedPref.edit()) {
+            putBoolean(
+                applicationContext.getString(R.string.alert_state_key),
+                when(state) {
+                    StateType.ON -> true
+                    else -> false
+                }
+            )
+            apply()
+        }
+    }
+
+    fun getAlertState(): StateType {
+        return when(sharedPref.getBoolean(
+            applicationContext.getString(R.string.alert_state_key),
+            false
+        )) {
+            true -> StateType.ON
+            else -> StateType.OFF
+        }
     }
 }

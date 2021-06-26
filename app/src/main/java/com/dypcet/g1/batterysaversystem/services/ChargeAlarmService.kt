@@ -9,9 +9,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dypcet.g1.batterysaversystem.MainActivity
 import com.dypcet.g1.batterysaversystem.R
-import com.dypcet.g1.batterysaversystem.alarmsettings.AlarmSettingsViewModel
-import com.dypcet.g1.batterysaversystem.alarmsettings.PERCENTAGE_EXTRA
 import com.dypcet.g1.batterysaversystem.receivers.PowerConnectionReceiver
+import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALARM
+import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALERT
+import com.dypcet.g1.batterysaversystem.utils.PERCENTAGE_EXTRA
+import com.dypcet.g1.batterysaversystem.utils.SERVICE_TYPE
 
 class ChargeAlarmService : Service() {
 
@@ -48,12 +50,15 @@ class ChargeAlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand Called")
-        val percentage = intent?.getFloatExtra(PERCENTAGE_EXTRA, 0.0F)!!
+        val percentage = intent?.getFloatExtra(PERCENTAGE_EXTRA, 0.0F)
+        val serviceType = intent?.getStringExtra(SERVICE_TYPE)
         Log.d(TAG, "onStartCommand Percentage : $percentage")
 
         serviceHandler?.obtainMessage()?.also { msg ->
             msg.arg1 = startId
-            msg.arg2 = percentage.toInt()
+            if (percentage != null) {
+                msg.arg2 = percentage.toInt()
+            }
             serviceHandler?.sendMessage(msg)
         }
 
@@ -64,24 +69,33 @@ class ChargeAlarmService : Service() {
             this,
             applicationContext.getString(R.string.notification_channel_id)
         )
-            .setContentTitle("Charge Alarm Service")
-            .setContentText("Charge Alarm set to $percentage")
+            .setContentTitle(
+                when(serviceType) {
+                    SERVICE_ALARM -> "Charge Alarm Service"
+                    SERVICE_ALERT -> "Charge Alert Service"
+                    else -> "Unintended Service call"
+                }
+            )
+            .setContentText(
+                when(serviceType) {
+                    SERVICE_ALARM -> "Charge Alarm set to $percentage"
+                    SERVICE_ALERT -> "Charge Alert set to $percentage"
+                    else -> "Unintended Service call"
+                }
+            )
             .setSmallIcon(R.drawable.egg_icon)
             .setContentIntent(pendingIntent)
             .build()
 
         startForeground(1, notification)
 
-        Log.d(TAG, "onStartCommand Finished")
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
-        if (!(AlarmSettingsViewModel.chargeComplete.value!!)) {
-            applicationContext.unregisterReceiver(receiver)
-            Log.d(TAG, "onDestroy receiver unregistered")
-        }
         Log.d(TAG, "onDestroy Called")
+        applicationContext.unregisterReceiver(receiver)
+        Log.d(TAG, "onDestroy receiver unregistered")
         super.onDestroy()
     }
 
