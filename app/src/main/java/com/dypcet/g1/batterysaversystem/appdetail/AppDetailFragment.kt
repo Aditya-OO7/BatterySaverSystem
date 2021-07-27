@@ -7,16 +7,26 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import com.dypcet.g1.batterysaversystem.BatterySaverApplication
 import com.dypcet.g1.batterysaversystem.R
 import com.dypcet.g1.batterysaversystem.databinding.FragmentAppDetailBinding
-import com.dypcet.g1.batterysaversystem.datasource.DataSource
 
 class AppDetailFragment : Fragment() {
 
     private lateinit var viewBinding: FragmentAppDetailBinding
-    private lateinit var viewModel: AppDetailViewModel
+
+    private val args: AppDetailFragmentArgs by navArgs()
+
+    private val detailViewModel by viewModels<AppDetailViewModel> {
+        AppDetailViewModelFactory(
+            (requireContext().applicationContext as BatterySaverApplication).dataSource,
+            args.packageName
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,48 +34,55 @@ class AppDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        viewBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_app_detail,
-            container,
-            false
-        )
-        viewBinding.lifecycleOwner = this
+        viewBinding = FragmentAppDetailBinding.inflate(inflater, container, false)
+            .apply {
+                viewModel = detailViewModel
+            }
+        viewBinding.lifecycleOwner = this.viewLifecycleOwner
 
-        val args = AppDetailFragmentArgs.fromBundle(requireArguments())
-
-        viewModel = AppDetailViewModel(
-            this.requireActivity().application,
-            DataSource.getInstance(requireActivity().application),
-            args.packageName
+        viewBinding.appIconView.setImageDrawable(
+            AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.ic_launcher_background
+            )
         )
 
-        viewBinding.viewModel = viewModel
+        detailViewModel.app.observe(viewLifecycleOwner, { app ->
+            if (app != null) {
+                viewBinding.appIconView.setImageDrawable(
+                    app.icon ?: AppCompatResources.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_launcher_background
+                    )
+                )
+                val detailList = HashMap<String, List<String>>()
 
-        val detailList = HashMap<String, List<String>>()
+                detailList["Permissions"] = app.permissions ?: emptyList()
+                detailList["Services"] = app.services ?: emptyList()
 
-        detailList["Permissions"] = viewModel.app.permissions ?: emptyList()
-        detailList["Services"] = viewModel.app.services ?: emptyList()
+                val titleList = arrayListOf("Permissions", "Services")
 
-        val titleList = arrayListOf("Permissions", "Services")
+                val expandableListAdapter = MyExpandableListAdapter(titleList, detailList)
+                viewBinding.expandableList.setAdapter(expandableListAdapter)
+            }
+        })
 
-        val expandableListAdapter = MyExpandableListAdapter(titleList, detailList)
-        viewBinding.expandableList.setAdapter(expandableListAdapter)
-
-        viewModel.navigateToApp.observe(viewLifecycleOwner, {
+        detailViewModel.navigateToApp.observe(viewLifecycleOwner, {
             if (it) {
                 val launchIntent = requireActivity()
                     .packageManager
                     .getLaunchIntentForPackage(args.packageName)
                 startActivity(launchIntent)
+                detailViewModel.doneOpeningApp()
             }
         })
 
-        viewModel.navigateToAppSettings.observe(viewLifecycleOwner, {
+        detailViewModel.navigateToAppSettings.observe(viewLifecycleOwner, {
             if (it) {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.fromParts("package", args.packageName, null)
                 startActivity(intent)
+                detailViewModel.doneClosingApp()
             }
         })
 

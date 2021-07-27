@@ -26,7 +26,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
 
     val eggImage = BitmapFactory.decodeResource(
         applicationContext.resources,
-        R.drawable.cooked_egg
+        R.drawable.app_logo
     )
 
     val bigPicStyle = NotificationCompat.BigPictureStyle()
@@ -37,7 +37,7 @@ fun NotificationManager.sendNotification(messageBody: String, applicationContext
         applicationContext,
         applicationContext.getString(R.string.notification_channel_id)
     )
-        .setSmallIcon(R.drawable.egg_icon)
+        .setSmallIcon(R.drawable.alarm_charge)
         .setContentTitle(applicationContext.getString(R.string.app_name))
         .setContentText(messageBody)
         .setContentIntent(contentPendingIntent)

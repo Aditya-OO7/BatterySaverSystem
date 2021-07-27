@@ -23,31 +23,31 @@
             tools:visibility="gone">
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/alert_image_view"
                 style="@style/alertStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginBottom="24dp"
                 android:contentDescription="@string/alert_icon_content_description"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintEnd_toEndOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:srcCompat="@android:drawable/ic_dialog_alert" />
+                app:layout_constraintBottom_toTopOf="@+id/not_charging_text_view"
+                app:layout_constraintEnd_toEndOf="@+id/not_charging_text_view"
+                app:layout_constraintStart_toStartOf="@+id/not_charging_text_view"
+                app:srcCompat="@drawable/ic_baseline_warning_24" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/not_charging_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:text="@string/charging_on_alert_text_view"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                app:layout_constraintBottom_toTopOf="@+id/button"
-                app:layout_constraintEnd_toEndOf="@+id/button"
-                app:layout_constraintStart_toStartOf="@+id/button" />
+                app:layout_constraintBottom_toTopOf="@+id/refresh_button"
+                app:layout_constraintEnd_toEndOf="@+id/refresh_button"
+                app:layout_constraintStart_toStartOf="@+id/refresh_button" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/refresh_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="@{()->viewmodel.onRefresh()}"
@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                app:layout_constraintBottom_toTopOf="@+id/slider"
+                app:layout_constraintBottom_toTopOf="@+id/alert_percentage_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/alert_title"
@@ -108,12 +108,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/enter_battery_percentage"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                app:layout_constraintBottom_toTopOf="@+id/slider"
+                app:layout_constraintBottom_toTopOf="@+id/alert_percentage_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/slider"
+                android:id="@+id/alert_percentage_slider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stepSize="1.0"
@@ -136,7 +136,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/stop_alert_button"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/slider" />
+                app:layout_constraintTop_toBottomOf="@+id/alert_percentage_slider" />
 
             <Button
                 android:id="@+id/stop_alert_button"

@@ -43,4 +43,10 @@
     <string name="open_button_text">Open</string>
     <string name="close_button_text">Close</string>
     <string name="alert_service_text_view">Alert</string>
+
+    <string name="less_than_minimum_battery">Percentage set less than minimum !</string>
+    <string name="not_charging">Device is not in charging mode.</string>
+
+    <string name="greater_than_maximum_battery">Percentage set greater than maximum</string>
+    <string name="is_charging">Device is in charging mode.</string>
 </resources>

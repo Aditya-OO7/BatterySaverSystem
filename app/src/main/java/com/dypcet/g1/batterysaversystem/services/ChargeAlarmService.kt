@@ -80,7 +80,13 @@ class ChargeAlarmService : Service() {
                     else -> "Unintended Service call"
                 }
             )
-            .setSmallIcon(R.drawable.egg_icon)
+            .setSmallIcon(
+                when (serviceType) {
+                    SERVICE_ALARM -> R.drawable.alarm_charge
+                    SERVICE_ALERT -> R.drawable.alert_charge
+                    else -> R.drawable.ic_launcher_foreground
+                }
+            )
             .setContentIntent(pendingIntent)
             .build()
 

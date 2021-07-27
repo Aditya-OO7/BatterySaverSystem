@@ -5,33 +5,14 @@ import android.content.SharedPreferences
 import com.dypcet.g1.batterysaversystem.R
 import com.dypcet.g1.batterysaversystem.utils.StateType
 
-class SharedPreferenceManager(val applicationContext: Context) {
+class BatteryPreferencesManager(val applicationContext: Context) : SharedPreferencesManager {
 
     private val sharedPref: SharedPreferences = applicationContext.getSharedPreferences(
         applicationContext.getString(R.string.preference_file_key),
         Context.MODE_PRIVATE
     )
 
-    companion object {
-        @Volatile
-        private var INSTANCE: SharedPreferenceManager? = null
-
-        fun getInstance(applicationContext: Context): SharedPreferenceManager {
-            synchronized(this) {
-                var instance = INSTANCE
-
-                if (instance == null) {
-                    instance = SharedPreferenceManager(applicationContext)
-
-                    INSTANCE = instance
-                }
-
-                return instance
-            }
-        }
-    }
-
-    fun putAlarmPercentage(percentage: Float) {
+    override fun putAlarmPercentage(percentage: Float) {
         with(sharedPref.edit()) {
             putFloat(
                 applicationContext.getString(R.string.alarm_percentage_key),
@@ -41,37 +22,37 @@ class SharedPreferenceManager(val applicationContext: Context) {
         }
     }
 
-    fun getAlarmPercentage(): Float {
+    override fun getAlarmPercentage(): Float {
         return sharedPref.getFloat(
             applicationContext.getString(R.string.alarm_percentage_key),
             0.0F
         )
     }
 
-    fun putAlarmState(state: StateType) {
+    override fun putAlarmState(state: StateType) {
         with(sharedPref.edit()) {
-            putBoolean(
+            putInt(
                 applicationContext.getString(R.string.alarm_state_key),
                 when (state) {
-                    StateType.ON -> true
-                    else -> false
+                    StateType.STARTED -> 1
+                    else -> 0
                 }
             )
             apply()
         }
     }
 
-    fun getAlarmState(): StateType {
-        return when (sharedPref.getBoolean(
+    override fun getAlarmState(): StateType {
+        return when (sharedPref.getInt(
             applicationContext.getString(R.string.alarm_state_key),
-            false
+            0
         )) {
-            true -> StateType.ON
-            else -> StateType.OFF
+            1 -> StateType.STARTED
+            else -> StateType.STOPPED
         }
     }
 
-    fun putAlertPercentage(percentage: Float) {
+    override fun putAlertPercentage(percentage: Float) {
         with(sharedPref.edit()) {
             putFloat(
                 applicationContext.getString(R.string.alert_percentage_key),
@@ -81,33 +62,33 @@ class SharedPreferenceManager(val applicationContext: Context) {
         }
     }
 
-    fun getAlertPercentage(): Float {
+    override fun getAlertPercentage(): Float {
         return sharedPref.getFloat(
             applicationContext.getString(R.string.alert_percentage_key),
             0.0F
         )
     }
 
-    fun putAlertState(state: StateType) {
+    override fun putAlertState(state: StateType) {
         with(sharedPref.edit()) {
-            putBoolean(
+            putInt(
                 applicationContext.getString(R.string.alert_state_key),
                 when (state) {
-                    StateType.ON -> true
-                    else -> false
+                    StateType.STARTED -> 1
+                    else -> 0
                 }
             )
             apply()
         }
     }
 
-    fun getAlertState(): StateType {
-        return when (sharedPref.getBoolean(
+    override fun getAlertState(): StateType {
+        return when (sharedPref.getInt(
             applicationContext.getString(R.string.alert_state_key),
-            false
+            0
         )) {
-            true -> StateType.ON
-            else -> StateType.OFF
+            1 -> StateType.STARTED
+            else -> StateType.STOPPED
         }
     }
 }

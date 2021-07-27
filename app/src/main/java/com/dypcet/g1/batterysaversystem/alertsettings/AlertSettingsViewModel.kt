@@ -1,142 +1,113 @@
 package com.dypcet.g1.batterysaversystem.alertsettings
 
-import android.app.Application
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.BatteryManager
 import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.dypcet.g1.batterysaversystem.datasource.SharedPreferenceManager
-import com.dypcet.g1.batterysaversystem.services.RingtoneService
-import com.dypcet.g1.batterysaversystem.services.ChargeAlarmService
-import com.dypcet.g1.batterysaversystem.utils.SERVICE_ALERT
-import com.dypcet.g1.batterysaversystem.utils.PERCENTAGE_EXTRA
-import com.dypcet.g1.batterysaversystem.utils.SERVICE_TYPE
+import androidx.lifecycle.*
+import com.dypcet.g1.batterysaversystem.R
+import com.dypcet.g1.batterysaversystem.datasource.SharedPreferencesManager
+import com.dypcet.g1.batterysaversystem.utils.ActionType
 import com.dypcet.g1.batterysaversystem.utils.StateType
 
-class AlertSettingsViewModel(application: Application) : AndroidViewModel(application) {
+class AlertSettingsViewModel(
+    private val sharedPreferencesManager: SharedPreferencesManager
+) : ViewModel() {
 
     private val TAG = AlertSettingsViewModel::class.java.simpleName
 
-    private val _percentage = MutableLiveData<Float>()
-    val percentage: LiveData<Float> = _percentage
+    val percentage = MutableLiveData<Float>()
 
-    private val _alertState = MutableLiveData<StateType>()
-    val alertState: LiveData<StateType> = _alertState
+    private val currentPercentage = MutableLiveData<Float>()
+
+    val checkCurrentPercentage = MutableLiveData<Boolean>()
+
+    private val _alertState = MutableLiveData<StateType?>()
+    val alertState: LiveData<StateType?> = _alertState
+
+    private val _alertAction = MutableLiveData<ActionType?>()
+    val alertAction: LiveData<ActionType?> = _alertAction
 
     private val _isChargingOn = MutableLiveData<Boolean>()
     val isChargingOn: LiveData<Boolean> = _isChargingOn
 
-    private val sharedPref =
-        SharedPreferenceManager.getInstance(getApplication<Application>().applicationContext)
+    val checkChargeState = MutableLiveData<Boolean>()
 
     val startButtonVisible = Transformations.map(_alertState) {
-        it == StateType.OFF
+        it == StateType.STOPPED
     }
 
     val stopButtonVisible = Transformations.map(_alertState) {
-        it == StateType.ON
+        it == StateType.STARTED
     }
 
     init {
-        _isChargingOn.value = getChargeState()
 
-        _percentage.value = sharedPref.getAlertPercentage()
+        onRefresh()
 
-        _alertState.value = sharedPref.getAlertState()
+        percentage.value = sharedPreferencesManager.getAlertPercentage()
+
+        _alertState.value = sharedPreferencesManager.getAlertState()
+        Log.d(TAG, "init: alertState > ${_alertState.value}")
     }
 
     fun saveAlertStateAndPercentage() {
-        sharedPref.putAlertPercentage(_percentage.value ?: 0F)
-        sharedPref.putAlertState(_alertState.value ?: StateType.OFF)
+        sharedPreferencesManager.putAlertPercentage(percentage.value ?: 0F)
+        sharedPreferencesManager.putAlertState(_alertState.value!!)
+        Log.d(TAG, "saveAlertStateAndPercentage: saved ${_alertState.value} state")
     }
 
-    fun setPercentage(value: Float) {
-        _percentage.value = value
+    fun setCurrentPercentage(value: Float) {
+        currentPercentage.value = value
     }
+
+    fun setChargingState(state: Boolean) {
+        _isChargingOn.value = state
+    }
+
+    private val _snackbarText = MutableLiveData<Int?>()
+    val snackbarText: LiveData<Int?> = _snackbarText
 
     fun onSetAlert() {
-        Log.d(TAG, "onSetAlert called")
-
         // Check if device is in charging state
         onRefresh()
         if (_isChargingOn.value!!) {
+            _snackbarText.postValue(R.string.is_charging)
             return
         }
 
-        // Check if current battery level is less than that of battery level set for alert
-        val currentPercentage = getCurrentPercentage()
-        if (_percentage.value!! > currentPercentage) {
-            Toast.makeText(
-                getApplication(),
-                "Percentage set greater than current percentage !",
-                Toast.LENGTH_LONG
-            ).show()
+        // Check if current battery level is less than
+        // that of battery level set for alert
+        checkCurrentPercentage.value = true
+        val currentPercentage = currentPercentage.value ?: 0.0F
+        if (percentage.value!! > currentPercentage) {
+            _snackbarText.postValue(R.string.greater_than_maximum_battery)
             return
-        }
-
-        // All clear! Start the alarm service
-        Intent(
-            getApplication<Application>().applicationContext,
-            ChargeAlarmService::class.java
-        ).also { i ->
-            i.putExtra(PERCENTAGE_EXTRA, _percentage.value)
-            i.putExtra(SERVICE_TYPE, SERVICE_ALERT)
-            getApplication<Application>().applicationContext?.startService(i)
         }
 
         // Notify Alert is on
-        _alertState.value = StateType.ON
+        _alertAction.value = ActionType.ON
+    }
+
+    fun doneSettingAlert() {
+        _alertState.value = StateType.STARTED
     }
 
     fun onStopAlert() {
-        Log.d(TAG, "onStopAlert called")
-
-        // Stop ringtone if charging is complete and alert ringtone is on
-        RingtoneService.getInstance(getApplication<Application>().applicationContext)
-            .stopAlarmIfOn()
-
-        // Now comes the end! Stop the alert service
-        Intent(
-            getApplication<Application>().applicationContext,
-            ChargeAlarmService::class.java
-        ).also { i ->
-            getApplication<Application>().applicationContext.stopService(i)
-        }
-
         // notify Alert is off
-        _alertState.value = StateType.OFF
+        _alertAction.value = ActionType.OFF
+    }
+
+    fun doneStoppingAlert() {
+        _alertState.value = StateType.STOPPED
     }
 
     fun onRefresh() {
-        _isChargingOn.value = getChargeState()
+        checkChargeState.value = true
     }
+}
 
-    private fun getChargeState(): Boolean {
-        val batteryStatus: Intent = getBatteryChangedIntent()
-        val status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-
-        return (status == BatteryManager.BATTERY_STATUS_CHARGING
-                || status == BatteryManager.BATTERY_STATUS_FULL)
-    }
-
-    private fun getCurrentPercentage(): Float {
-        val batteryStatus: Intent = getBatteryChangedIntent()
-
-        return batteryStatus.let { intent ->
-            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-            level * 100 / scale.toFloat()
-        }
-    }
-
-    private fun getBatteryChangedIntent(): Intent {
-        return IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { intentFilter ->
-            getApplication<Application>().registerReceiver(null, intentFilter)
-        }!!
-    }
+@Suppress("UNCHECKED_CAST")
+class AlertSettingsViewModelFactory(
+    private val sharedPreferencesManager: SharedPreferencesManager
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>) =
+        (AlertSettingsViewModel(sharedPreferencesManager) as T)
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -29,7 +30,26 @@ class TabCollectionFragment : Fragment() {
 
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = "Tab ${(position + 1)}"
+            when (position) {
+                0 -> {
+                    tab.icon = AppCompatResources.getDrawable(
+                        view.context,
+                        R.drawable.ic_baseline_apps_24
+                    )
+                }
+                1 -> {
+                    tab.icon = AppCompatResources.getDrawable(
+                        view.context,
+                        R.drawable.ic_baseline_alarm_24
+                    )
+                }
+                2 -> {
+                    tab.icon = AppCompatResources.getDrawable(
+                        view.context,
+                        R.drawable.ic_baseline_battery_alert_24
+                    )
+                }
+            }
         }.attach()
     }
 }

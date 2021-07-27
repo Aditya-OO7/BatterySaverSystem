@@ -6,6 +6,6 @@ const val SERVICE_ALERT = "ALERT SERVICE"
 const val PERCENTAGE_EXTRA = "PERCENTAGE"
 
 enum class StateType {
-    ON,
-    OFF
+    STARTED,
+    STOPPED
 }
