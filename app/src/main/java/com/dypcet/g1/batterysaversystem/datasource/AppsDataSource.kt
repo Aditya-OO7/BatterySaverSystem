@@ -23,25 +23,6 @@ class AppsDataSource(private val applicationContext: Context) : DataSource {
     private val usm =
         applicationContext.applicationContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppsDataSource? = null
-
-        fun getInstance(application: Application): AppsDataSource {
-            synchronized(this) {
-                var instance = INSTANCE
-
-                if (instance == null) {
-                    instance = AppsDataSource(application)
-                    INSTANCE = instance
-                }
-
-                return instance
-            }
-        }
-    }
-
-
     override fun getApps(flag: AppListFilterType): List<InstalledApp> {
         val appList = ArrayList<InstalledApp>()
         return when (flag) {
